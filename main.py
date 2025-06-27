@@ -6,7 +6,7 @@ app = FastAPI()
 class Item(BaseModel):
     name: str 
     text: str
-    is_done: bool 
+    is_done: bool = False
 
 items = []
 
