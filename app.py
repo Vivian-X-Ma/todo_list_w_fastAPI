@@ -96,10 +96,14 @@ if not st.session_state['timer_running']:
         st.session_state['timer_seconds'] = timer_length * 60
         st.rerun()  # Immediate update for slider changes
 
-# Timer display
-minutes = st.session_state['timer_seconds'] // 60
-seconds = st.session_state['timer_seconds'] % 60
-timer_str = f"{minutes:02d}:{seconds:02d}"
+def update_value():
+    minutes = st.session_state['timer_seconds'] // 60
+    seconds = st.session_state['timer_seconds'] % 60
+    timer_str = f"{minutes:02d}:{seconds:02d}"
+    return timer_str
+
+
+timer_str = update_value()
 
 # Use a placeholder for the timer to avoid layout shifts
 timer_placeholder = st.empty()
@@ -120,7 +124,6 @@ with col3:
 # Handle button clicks
 if start_button:
     st.session_state['timer_running'] = True
-    st.session_state['last_update'] = time.time()
     st.rerun()
 
 if end_button:
@@ -134,11 +137,10 @@ if reset_button:
 
 # Countdown logic with better timing
 if st.session_state['timer_running'] and st.session_state['timer_seconds'] > 0:
-    current_time = time.time()
-    if current_time - st.session_state['last_update'] >= 1.0:
-        st.session_state['timer_seconds'] -= 1
-        st.session_state['last_update'] = current_time
-        st.rerun()  # Keep the timer updating smoothly
+    time.sleep(1)
+    st.session_state['timer_seconds'] -= 1
+    timer_str = update_value()
+    st.rerun()
 elif st.session_state['timer_running'] and st.session_state['timer_seconds'] <= 0:
     st.session_state['timer_running'] = False
     st.balloons()  # Celebration when timer ends
